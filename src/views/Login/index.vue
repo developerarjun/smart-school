@@ -22,28 +22,18 @@
                         dark
                         flat
                         >
-                        <v-toolbar-title>Login form</v-toolbar-title>
+                        <v-toolbar-title>SuperAdmin Login</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                            <v-btn
-                                :href="source"
-                                icon
-                                large
-                                target="_blank"
-                                v-on="on"
-                            >
-                                <v-icon>mdi-code-tags</v-icon>
-                            </v-btn>
-                            </template>
-                            <span>Source</span>
-                        </v-tooltip>
                         </v-toolbar>
                         <v-card-text>
-                        <v-form>
+                        <v-form
+                            ref="form"
+                            v-model="valid">
                             <v-text-field
-                            label="Login"
+                            label="Username or email"
                             name="login"
+                            v-model="loginDetail.userName"
+                            :rules="userRules"
                             prepend-icon="mdi-account"
                             type="text"
                             ></v-text-field>
@@ -52,14 +42,18 @@
                             id="password"
                             label="Password"
                             name="password"
+                            v-model="loginDetail.password"
+                            :rules="passwordRules"
                             prepend-icon="mdi-lock"
-                            type="password"
+                            :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append="() => (value = !value)"
+                            :type="value ? 'password' : 'text'"
                             ></v-text-field>
                         </v-form>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary">Login</v-btn>
+                        <v-btn color="primary" @click="loginToSuperAdmin">Login</v-btn>
                         </v-card-actions>
                     </v-card>
                     </v-col>
@@ -74,8 +68,28 @@
 <script>
 export default {
     data :() =>({
-        source : '',
-        
-    })
+        valid: true,
+        loginDetail: {
+            userName: '',
+            password: ''
+        },
+        value: String,
+        userRules: [
+            a => !!a || 'Username is required'
+        ],
+        passwordRules:[
+            a => !!a || 'Password is required'
+        ]
+    }),
+    methods: {
+        validateForm(){
+            this.$refs.form.validate()
+        },
+        loginToSuperAdmin(){
+            this.validateForm();
+            if(!this.valid) return;
+            alert();
+        }
+    }
 }
 </script>
